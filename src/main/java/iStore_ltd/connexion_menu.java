@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class register {
+public class connexion_menu {
     private JLabel logo;
     private JLabel lbl_email;
     private JTextField tf_email;
@@ -15,7 +15,7 @@ public class register {
     private JPanel conn_menu;
 
 
-    public register() {
+    public connexion_menu() {
 
         JFrame frame = new JFrame("iStore");
         frame.setContentPane(this.conn_menu);
