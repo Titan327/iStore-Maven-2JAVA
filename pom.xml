@@ -15,11 +15,14 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
+        <!--- JBCrypt lib utiliser pour le cryptage des mots de passes -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
+
     </dependencies>
 
 </project>
