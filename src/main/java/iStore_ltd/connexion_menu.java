@@ -31,11 +31,11 @@ public class connexion_menu {
 
         b_login.addActionListener(new ActionListener() {
 
-            connection_DB db = connection_DB.getInstance();
-            Connection connection = db.getConnection();
-
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
 
                 //get the e-mail
                 String email = tf_email.getText();
@@ -54,10 +54,10 @@ public class connexion_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                System.out.println("get_instance");
                 connection_DB db = connection_DB.getInstance();
-                System.out.println("instance");
+                System.out.println("get_connexion");
                 Connection connection = db.getConnection();
-                System.out.println("connexion");
 
                 //get the e-mail
                 String email = tf_email.getText();
