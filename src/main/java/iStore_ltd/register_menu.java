@@ -51,35 +51,6 @@ public class register_menu {
                 System.out.println(crypt_password);
 
 
-                /*
-                //requete non preparer
-                try {
-                    Statement statement = connection.createStatement();
-                    ResultSet result = statement.executeQuery("SELECT * FROM users");
-                    while (result.next()) {
-                        String email_db = result.getString("email");
-                        String password_db = result.getString("password");
-                        System.out.println("3 email : " + email_db + ", password : " + password_db);
-                    }
-                } catch (SQLException exp) {
-                    exp.printStackTrace();
-                }
-
-                //requete preparer
-                try {
-                    PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
-                    statement.setString(1, email);
-                    ResultSet result = statement.executeQuery();
-                    while (result.next()) {
-                        String email_db = result.getString("email");
-                        String password_db = result.getString("password");
-                        System.out.println("3 email : " + email_db + ", password : " + password_db);
-                    }
-                } catch (SQLException exp) {
-                    exp.printStackTrace();
-                }
-                 */
-
                 //requete préparer
                 try {
                     PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
