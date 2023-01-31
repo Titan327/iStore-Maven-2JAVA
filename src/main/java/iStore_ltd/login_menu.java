@@ -42,53 +42,70 @@ public class login_menu {
 
                 //get the e-mail
                 String email = tf_email.getText();
+                if(email.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ e-mail est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
 
                 //get the password
                 String password = String.valueOf(ptf_password.getPassword());
+                if(password.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ mot de passe est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
 
                 System.out.println(email);
                 System.out.println(password);
 
-                //on verifie si le compte existe
+                if(!email.equals("") & !password.equals("")){
 
-                try {
-                    PreparedStatement statement = connection.prepareStatement("SELECT password FROM users WHERE email = ?");
-                    statement.setString(1, email);
-                    ResultSet result = statement.executeQuery();
+                    //on verifie si le compte existe
 
-                    Boolean find_in_user = false;
-                    String password_db = null;
+                    try {
+                        PreparedStatement statement = connection.prepareStatement("SELECT password FROM users WHERE email = ?");
+                        statement.setString(1, email);
+                        ResultSet result = statement.executeQuery();
 
-                    while (result.next()) {
-                        find_in_user = true;
-                        password_db = result.getString("password");
-                        System.out.println("mdp_db : " + password_db);
+                        Boolean find_in_user = false;
+                        String password_db = null;
 
-                    }
+                        while (result.next()) {
+                            find_in_user = true;
+                            password_db = result.getString("password");
+                            System.out.println("mdp_db : " + password_db);
 
-                    if(find_in_user){
-                        System.out.println("user existant");
-                        if (BCrypt.checkpw(password, password_db)){
-                            System.out.println("mdp bon");
+                        }
 
-                            //frame.setVisible(false);
-                            frame.dispose();
+                        if(find_in_user){
+
+                            System.out.println("user existant");
+
+                            if (BCrypt.checkpw(password, password_db)){
+                                System.out.println("mdp bon");
+
+                                //frame.setVisible(false);
+                                frame.dispose();
 
 
+                            }
+                            else {
+
+                                JOptionPane.showMessageDialog(frame, "Erreur : Mot de passe erroné", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                                System.out.println("mdp mauvais");
+                            }
                         }
                         else {
-                            System.out.println("mdp mauvais");
+
+                            JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail n'est associée à aucun compte, essayer de vous inscrire", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                            System.out.println("user non existant");
                         }
-                    }
-                    else {
-                        System.out.println("user non existant");
-                    }
 
-                } catch (SQLException exp) {
-                    exp.printStackTrace();
+                    } catch (SQLException exp) {
+
+                        exp.printStackTrace();
+
+                    }
                 }
-
-
             }
         });
 

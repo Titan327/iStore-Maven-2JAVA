@@ -43,68 +43,121 @@ public class register_menu {
 
                 //get the e-mail
                 String email = tf_email.getText();
+                if(email.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ e-mail est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+                //get password
+                String password = String.valueOf(ptf_password.getPassword());
+                if(password.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ mot de passe est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+                //get password repeated
+                String password_rep = String.valueOf(ptf_conf_password.getPassword());
+                if(password_rep.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ répéter est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+                //get the pseudo
+                String pseudo = tf_pseudo.getText();
+                if(pseudo.equals("")){
+                    JOptionPane.showMessageDialog(frame, "Erreur : Le champ pseudo est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
 
                 //encrypt the password
-                String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
+                //String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
 
                 System.out.println(email);
-                System.out.println(crypt_password);
+                System.out.println(password);
+                System.out.println(password_rep);
 
 
-                //requete préparer
-                try {
-                    PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
-                    statement.setString(1, email);
-                    ResultSet result = statement.executeQuery();
+                if(!email.equals("") & !password.equals("") & !password_rep.equals("") & !pseudo.equals("")){
 
-                    Boolean find_in_user = false;
+                    //requete préparer
+                    try {
+                        PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
+                        statement.setString(1, email);
+                        ResultSet result = statement.executeQuery();
 
-                    while (result.next()) {
+                        Boolean find_in_user = false;
 
-                        find_in_user = true;
+                        while (result.next()) {
 
-                    }
-                    if(find_in_user){
-
-                        System.out.println("user existant");
-
-                    }
-                    else {
-
-                        Boolean find_in_whitelist = false;
-
-                        PreparedStatement statement2 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
-                        statement2.setString(1, email);
-                        ResultSet result2 = statement2.executeQuery();
-
-                        while (result2.next()) {
-
-                            find_in_whitelist = true;
+                            find_in_user = true;
 
                         }
-                        if(find_in_whitelist){
-                            PreparedStatement statement3 = connection.prepareStatement("INSERT into users VALUES (?,?);");
+                        if(find_in_user){
+
+                            JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail est déja associer a un compte", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                            System.out.println("user existant");
+
+                        }
+                        else {
+
+                            Boolean find_in_whitelist = false;
+
+                            PreparedStatement statement2 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
+                            statement2.setString(1, email);
+                            ResultSet result2 = statement2.executeQuery();
+
+                            while (result2.next()) {
+
+                                find_in_whitelist = true;
+
+                            }
+
+                            PreparedStatement statement3 = connection.prepareStatement("SELECT email FROM admin WHERE email = ?");
                             statement3.setString(1, email);
-                            statement3.setString(2, crypt_password);
-                            statement3.executeUpdate();
+                            ResultSet result3 = statement3.executeQuery();
 
-                            System.out.println("user crée");
+                            String role = "user";
 
-                            //frame.setVisible(false);
-                            frame.dispose();
+                            while (result3.next()) {
 
-                        }
-                        else{
+                                role = "admin";
 
-                            System.out.println("user not whitelist");
+                            }
 
+
+                            if(find_in_whitelist){
+
+                                if(password.equals(password_rep)){
+
+
+                                    String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
+
+                                    PreparedStatement statement4 = connection.prepareStatement("INSERT into users (email,pseudo,password,role) VALUES (?,?,?,?);");
+                                    statement4.setString(1, email);
+                                    statement4.setString(2, pseudo);
+                                    statement4.setString(3, crypt_password);
+                                    statement4.setString(4, role);
+                                    statement4.executeUpdate();
+
+                                    System.out.println("user crée");
+
+                                    //frame.setVisible(false);
+                                    frame.dispose();
+
+                                }
+                                else{
+                                    JOptionPane.showMessageDialog(frame, "Erreur : Vous avez mal répeté votre mot de passe", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                }
+
+                            }
+                            else{
+
+                                JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail n'est pas autorisé", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                System.out.println("user not whitelist");
+
+                            }
                         }
                     }
-                }
-                catch (SQLException exp) {
-                    exp.printStackTrace();
-                }
+                    catch (SQLException exp) {
 
+                        exp.printStackTrace();
+
+                    }
+                }
             }
         });
         b_back.addActionListener(new ActionListener() {
