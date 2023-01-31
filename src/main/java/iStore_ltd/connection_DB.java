@@ -37,7 +37,9 @@ public class connection_DB {
 
     public static connection_DB getInstance() {
         try {
+                //on test si l'instance est null ou si la connexion n'est pas valide.
                 if (instance == null || !connection.isValid(5)) {
+                    //on se reconecte
                     System.out.println("nv_instance");
                     instance = new connection_DB();
                 }

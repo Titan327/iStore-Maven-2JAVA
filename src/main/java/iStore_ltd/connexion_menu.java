@@ -34,19 +34,24 @@ public class connexion_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                System.out.println("get_instance");
                 connection_DB db = connection_DB.getInstance();
+                System.out.println("get_connexion");
                 Connection connection = db.getConnection();
 
                 //get the e-mail
                 String email = tf_email.getText();
 
-                //test the password
-                String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
+                //get the password
+                String crypt_password = String.valueOf(ptf_password.getPassword());
 
                 System.out.println(email);
                 System.out.println(crypt_password);
 
-                //test testob = new test(email,password);
+                //on verifie si le compte existe
+
+
+
 
             }
         });
@@ -109,12 +114,11 @@ public class connexion_menu {
 
                         PreparedStatement statement2 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
                         statement2.setString(1, email);
-                        ResultSet result2 = statement.executeQuery();
-
+                        ResultSet result2 = statement2.executeQuery();
 
                         while (result2.next()) {
                             find_in_whitelist = true;
-                            String email_db = result.getString("email");
+                            String email_db = result2.getString("email");
                             System.out.println("3 email : " + email_db);
                         }
                         if(find_in_whitelist){
@@ -126,9 +130,6 @@ public class connexion_menu {
                         else{
                             System.out.println("existe pas dans whitelist");
                         }
-
-
-
                     }
                 } catch (SQLException exp) {
                     exp.printStackTrace();
