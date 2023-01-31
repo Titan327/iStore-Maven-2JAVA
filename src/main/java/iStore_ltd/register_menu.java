@@ -5,56 +5,33 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class connexion_menu {
+public class register_menu {
     private JLabel logo;
-    private JLabel lbl_email;
     private JTextField tf_email;
-    private JLabel lbl_password;
     private JPasswordField ptf_password;
-    private JButton b_login;
+    private JLabel password;
+    private JLabel email;
     private JButton b_register;
-    private JPanel conn_menu;
+    private JTextField tf_pseudo;
+    private JLabel pseudo;
+    private JPasswordField ptf_conf_password;
+    private JLabel conf_password;
+    private JPanel register_menu;
+    private JButton b_back;
 
-
-    public connexion_menu() {
+    public register_menu() {
 
         JFrame frame = new JFrame("iStore");
-        frame.setContentPane(this.conn_menu);
+        frame.setContentPane(this.register_menu);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
-        //recupere la connexion existante a la base de donnée ou en recrée une si besoin
-
-
-        b_login.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                System.out.println("get_instance");
-                connection_DB db = connection_DB.getInstance();
-                System.out.println("get_connexion");
-                Connection connection = db.getConnection();
-
-                //get the e-mail
-                String email = tf_email.getText();
-
-                //get the password
-                String crypt_password = String.valueOf(ptf_password.getPassword());
-
-                System.out.println(email);
-                System.out.println(crypt_password);
-
-                //on verifie si le compte existe
-
-
-
-
-            }
-        });
         b_register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,12 +51,25 @@ public class connexion_menu {
                 System.out.println(crypt_password);
 
 
-
                 /*
                 //requete non preparer
                 try {
                     Statement statement = connection.createStatement();
                     ResultSet result = statement.executeQuery("SELECT * FROM users");
+                    while (result.next()) {
+                        String email_db = result.getString("email");
+                        String password_db = result.getString("password");
+                        System.out.println("3 email : " + email_db + ", password : " + password_db);
+                    }
+                } catch (SQLException exp) {
+                    exp.printStackTrace();
+                }
+
+                //requete preparer
+                try {
+                    PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
+                    statement.setString(1, email);
+                    ResultSet result = statement.executeQuery();
                     while (result.next()) {
                         String email_db = result.getString("email");
                         String password_db = result.getString("password");
@@ -99,9 +89,9 @@ public class connexion_menu {
                     Boolean find_in_user = false;
 
                     while (result.next()) {
+
                         find_in_user = true;
-                        String email_db = result.getString("email");
-                        System.out.println("3 email : " + email_db);
+
                     }
                     if(find_in_user){
 
@@ -117,28 +107,43 @@ public class connexion_menu {
                         ResultSet result2 = statement2.executeQuery();
 
                         while (result2.next()) {
+
                             find_in_whitelist = true;
-                            String email_db = result2.getString("email");
-                            System.out.println("3 email : " + email_db);
+
                         }
                         if(find_in_whitelist){
                             PreparedStatement statement3 = connection.prepareStatement("INSERT into users VALUES (?,?);");
                             statement3.setString(1, email);
                             statement3.setString(2, crypt_password);
                             statement3.executeUpdate();
+
+                            System.out.println("user crée");
+
+                            //frame.setVisible(false);
+                            frame.dispose();
+
                         }
                         else{
-                            System.out.println("existe pas dans whitelist");
+
+                            System.out.println("user not whitelist");
+
                         }
                     }
-                } catch (SQLException exp) {
+                }
+                catch (SQLException exp) {
                     exp.printStackTrace();
                 }
 
             }
         });
+        b_back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                frame.dispose();
+                new choix_log_or_reg();
+
+            }
+        });
     }
-
-
 }
-

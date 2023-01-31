@@ -5,7 +5,7 @@ import java.sql.*;
 public class Main {
     public static void main(String [] args){
 
-        new connexion_menu();
+        new choix_log_or_reg();
 
     }
 
