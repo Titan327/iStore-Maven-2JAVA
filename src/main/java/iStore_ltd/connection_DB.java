@@ -6,7 +6,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class connection_DB {
+
+//afin de ne pas avoir a se reconnecter a la base de donnée a chaque requete on vien crée un objet qui va crée une instance de connexion
+//il faut verifier qu'une seule connexion est en cours a chaque fois
+//Si aucune instance n'est en cours on en crée une sinon on retourne simplement cet instance.
+//on appele cette technique du connection pooling.
+
+public class connection_DB extends Thread{
     private static connection_DB instance = null;
     private Connection connection = null;
 
@@ -15,15 +21,14 @@ public class connection_DB {
     String user = "u788104185_dev_tristan";
     String passwd = "~g3|8>u#V";
 
+
+
     //connection_DB.getInstance().getConnection()
 
-    private connection_DB() {
+    public connection_DB() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, user, passwd);
-
-            System.out.println("connection");
-
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -31,18 +36,17 @@ public class connection_DB {
 
     public static connection_DB getInstance() {
         if (instance == null) {
-
-            System.out.println("nv_instance");
-
             instance = new connection_DB();
         }
-        System.out.println("returne inst");
         return instance;
     }
 
+
+
     public Connection getConnection() {
 
-        System.out.println("returne conn");
+        //System.out.println("returne_conn");
+
 
         return connection;
     }

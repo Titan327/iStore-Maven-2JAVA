@@ -5,10 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class connexion_menu {
     private JLabel logo;
@@ -29,10 +26,14 @@ public class connexion_menu {
         frame.pack();
         frame.setVisible(true);
 
-        //Connection obj = new connexion();
+        //recupere la connexion existante a la base de donnée ou en recrée une si besoin
 
 
         b_login.addActionListener(new ActionListener() {
+
+            connection_DB db = connection_DB.getInstance();
+            Connection connection = db.getConnection();
+
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -53,6 +54,11 @@ public class connexion_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                connection_DB db = connection_DB.getInstance();
+                System.out.println("instance");
+                Connection connection = db.getConnection();
+                System.out.println("connexion");
+
                 //get the e-mail
                 String email = tf_email.getText();
 
@@ -62,18 +68,70 @@ public class connexion_menu {
                 System.out.println(email);
                 System.out.println(crypt_password);
 
-                try (Connection connection = connection_DB.getInstance().getConnection();
-                     Statement statement = connection.createStatement();
-                     ResultSet resultSet = statement.executeQuery("SELECT * FROM users")) {
-                    System.out.println("ici1");
-                    while (resultSet.next()) {
-                        String email_db = resultSet.getString("email");
-                        String password_db = resultSet.getString("password");
-                        System.out.println("email : " + email_db + ", password : " + password_db);
+
+
+                /*
+                //requete non preparer
+                try {
+                    Statement statement = connection.createStatement();
+                    ResultSet result = statement.executeQuery("SELECT * FROM users");
+                    while (result.next()) {
+                        String email_db = result.getString("email");
+                        String password_db = result.getString("password");
+                        System.out.println("3 email : " + email_db + ", password : " + password_db);
                     }
-                } catch (Exception exept) {
-                    System.out.println("ici");
-                    exept.printStackTrace();
+                } catch (SQLException exp) {
+                    exp.printStackTrace();
+                }
+                 */
+
+                //requete préparer
+                try {
+                    PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
+                    statement.setString(1, email);
+                    ResultSet result = statement.executeQuery();
+
+                    Boolean find_in_user = false;
+
+                    while (result.next()) {
+                        find_in_user = true;
+                        String email_db = result.getString("email");
+                        System.out.println("3 email : " + email_db);
+                    }
+                    if(find_in_user){
+
+                        System.out.println("user existant");
+
+                    }
+                    else {
+
+                        Boolean find_in_whitelist = false;
+
+                        PreparedStatement statement2 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
+                        statement2.setString(1, email);
+                        ResultSet result2 = statement.executeQuery();
+
+
+                        while (result2.next()) {
+                            find_in_whitelist = true;
+                            String email_db = result.getString("email");
+                            System.out.println("3 email : " + email_db);
+                        }
+                        if(find_in_whitelist){
+                            PreparedStatement statement3 = connection.prepareStatement("INSERT into users VALUES (?,?);");
+                            statement3.setString(1, email);
+                            statement3.setString(2, crypt_password);
+                            statement3.executeUpdate();
+                        }
+                        else{
+                            System.out.println("existe pas dans whitelist");
+                        }
+
+
+
+                    }
+                } catch (SQLException exp) {
+                    exp.printStackTrace();
                 }
 
             }
