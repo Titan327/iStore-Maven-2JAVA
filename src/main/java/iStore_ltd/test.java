@@ -11,8 +11,10 @@ import java.util.Properties;
 
 public class test {
     public static void main(String[] args) {
-
-        JOptionPane.showMessageDialog(null, "Erreur : opération échouée", "Erreur", JOptionPane.ERROR_MESSAGE);
+        String str = "eeEee!";
+        if(str.matches("^.*[^a-zA-Z0-9 ].*$")){
+            System.out.println("good");
+        }
 
     }
 }

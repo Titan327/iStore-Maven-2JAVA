@@ -52,8 +52,6 @@ public class login_menu {
                     JOptionPane.showMessageDialog(frame, "Erreur : Le champ mot de passe est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
 
-                System.out.println(email);
-                System.out.println(password);
 
                 if(!email.equals("") & !password.equals("")){
 
@@ -70,7 +68,6 @@ public class login_menu {
                         while (result.next()) {
                             find_in_user = true;
                             password_db = result.getString("password");
-                            System.out.println("mdp_db : " + password_db);
 
                         }
 

@@ -62,13 +62,6 @@ public class register_menu {
                     JOptionPane.showMessageDialog(frame, "Erreur : Le champ pseudo est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
 
-                //encrypt the password
-                //String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
-
-                System.out.println(email);
-                System.out.println(password);
-                System.out.println(password_rep);
-
 
                 if(!email.equals("") & !password.equals("") & !password_rep.equals("") & !pseudo.equals("")){
 
@@ -121,28 +114,39 @@ public class register_menu {
 
                             if(find_in_whitelist){
 
-                                if(password.equals(password_rep)){
+                                if(password.length() >= 10 & password.matches(".*[A-Z].*") & password.matches("^.*[^a-zA-Z0-9 ].*$") /*& !password.contains(" ")*/ ){
+
+                                    if(password.equals(password_rep)){
 
 
-                                    String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
+                                        String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
 
-                                    PreparedStatement statement4 = connection.prepareStatement("INSERT into users (email,pseudo,password,role) VALUES (?,?,?,?);");
-                                    statement4.setString(1, email);
-                                    statement4.setString(2, pseudo);
-                                    statement4.setString(3, crypt_password);
-                                    statement4.setString(4, role);
-                                    statement4.executeUpdate();
+                                        PreparedStatement statement4 = connection.prepareStatement("INSERT into users (email,pseudo,password,role) VALUES (?,?,?,?);");
+                                        statement4.setString(1, email);
+                                        statement4.setString(2, pseudo);
+                                        statement4.setString(3, crypt_password);
+                                        statement4.setString(4, role);
+                                        statement4.executeUpdate();
 
-                                    System.out.println("user crée");
+                                        System.out.println("user crée");
 
-                                    //frame.setVisible(false);
-                                    frame.dispose();
+                                        //frame.setVisible(false);
+                                        frame.dispose();
+
+                                    }
+                                    else{
+
+                                        JOptionPane.showMessageDialog(frame, "Erreur : Vous avez mal répeté votre mot de passe", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                                    }
 
                                 }
                                 else{
-                                    JOptionPane.showMessageDialog(frame, "Erreur : Vous avez mal répeté votre mot de passe", "Erreur", JOptionPane.ERROR_MESSAGE);
-                                }
 
+                                    JOptionPane.showMessageDialog(frame, "Erreur : Votre mot de passe doit contenir au moin 10 caractere, dont au moin un caractere special et une majuscule", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+
+                                }
                             }
                             else{
 
