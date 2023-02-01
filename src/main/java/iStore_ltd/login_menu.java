@@ -80,6 +80,7 @@ public class login_menu {
 
                                 //frame.setVisible(false);
                                 frame.dispose();
+                                new disp_stock();
 
 
                             }

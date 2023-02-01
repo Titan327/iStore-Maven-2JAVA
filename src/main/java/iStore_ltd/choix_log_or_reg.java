@@ -7,12 +7,12 @@ import java.awt.event.ActionListener;
 public class choix_log_or_reg {
     private JButton b_login;
     private JButton b_register;
-    private JPanel log_or_rgist;
+    private JPanel log_or_regist;
 
     public choix_log_or_reg() {
 
     JFrame frame = new JFrame("iStore");
-    frame.setContentPane(this.log_or_rgist);
+    frame.setContentPane(this.log_or_regist);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();
     frame.setVisible(true);

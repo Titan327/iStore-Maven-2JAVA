@@ -3,8 +3,10 @@ package iStore_ltd;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -131,7 +133,9 @@ public class register_menu {
                                         System.out.println("user crée");
 
                                         //frame.setVisible(false);
+
                                         frame.dispose();
+                                        new login_menu();
 
                                     }
                                     else{
