@@ -10,5 +10,3 @@ public class Main {
     }
 
 }
-
-//Image icon = new ImageIcon("icon.png").getImage();
