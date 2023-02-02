@@ -113,20 +113,50 @@ public class disp_stock {
 
                     }
 
-                    PreparedStatement statement2 = connection.prepareStatement("UPDATE product_in_store  SET quantity = quantity - ? WHERE product_id = ? AND store_id = ?;");
 
                     String quantity = tf_quanti_sell.getText();
 
-                    statement2.setString(1, quantity);
+                    int product_id = comb_obj.getSelectedIndex();
+                    Object value = tab_data.getValueAt(product_id, 1);
+
+                    String str_val = String.valueOf(value);
+
+                    int value_int = 0;
+
+                    if(comb_sell_add.getSelectedIndex() == 0) {
+
+                        value_int = Integer.parseInt(str_val) - Integer.parseInt(quantity);
+
+                        if(value_int < 0 ){
+
+                            JOptionPane.showMessageDialog(frame, "Erreur : Stock insuffisant pour cette action", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            return;
+
+                        }
+
+                    } else if (comb_sell_add.getSelectedIndex() == 1) {
+
+                        value_int = Integer.parseInt(str_val) + Integer.parseInt(quantity);
+
+                    }
+
+                    DefaultTableModel model = (DefaultTableModel) tab_data.getModel();
+                    model.setValueAt(value_int, product_id, 1);
+
+                    PreparedStatement statement2 = connection.prepareStatement("UPDATE product_in_store  SET quantity = ? WHERE product_id = ? AND store_id = ?;");
+
+                    statement2.setString(1, String.valueOf(value_int));
                     statement2.setString(2, product);
                     statement2.setString(3, String.valueOf(store_id));
                     statement2.executeUpdate();
 
 
                 }
-                catch (SQLException exp) {
-                    exp.printStackTrace();
-                }
+                catch(SQLException exp){
+                        exp.printStackTrace();
+                    }
+
+
 
                 //update le tableau en interface graphique
 
