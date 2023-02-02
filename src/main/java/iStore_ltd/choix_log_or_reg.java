@@ -1,8 +1,10 @@
 package iStore_ltd;
 
 import javax.swing.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Image;
 
 public class choix_log_or_reg {
     private JButton b_login;
@@ -12,6 +14,8 @@ public class choix_log_or_reg {
     public choix_log_or_reg() {
 
     JFrame frame = new JFrame("iStore");
+    Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
+    frame.setIconImage(icon);
     frame.setContentPane(this.log_or_regist);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();

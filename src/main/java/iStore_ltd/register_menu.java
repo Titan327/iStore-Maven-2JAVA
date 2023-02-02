@@ -4,6 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,6 +30,8 @@ public class register_menu {
     public register_menu() {
 
         JFrame frame = new JFrame("iStore");
+        Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
+        frame.setIconImage(icon);
         frame.setContentPane(this.register_menu);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

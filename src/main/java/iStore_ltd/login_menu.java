@@ -3,6 +3,7 @@ package iStore_ltd;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -22,6 +23,8 @@ public class login_menu {
     public login_menu() {
 
         JFrame frame = new JFrame("iStore");
+        Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
+        frame.setIconImage(icon);
         frame.setContentPane(this.conn_menu);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

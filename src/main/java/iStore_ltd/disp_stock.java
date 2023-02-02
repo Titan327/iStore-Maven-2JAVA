@@ -2,6 +2,7 @@ package iStore_ltd;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -87,6 +88,8 @@ public class disp_stock {
         }
 
         JFrame frame = new JFrame("iStore");
+        Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
+        frame.setIconImage(icon);
         frame.setContentPane(this.disp_stock);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
