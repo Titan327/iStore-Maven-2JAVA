@@ -22,25 +22,20 @@ public class disp_stock {
     private JComboBox comb_sell_add;
     private JTable tab_data;
     private JScrollPane data_table;
+    private int user_id = 0;
+    private int store_id = 0;
 
     public disp_stock() {
 
         tab_data.setModel(new DefaultTableModel(
                 null,
-                new String[]{"nom produit","quantité"}
+                new String[]{"nom du produit","quantité"}
         ));
 
 
-
-        //comb_choice_sell_add.addItem("New Item 1");
-
-        System.out.println("get_instance");
         connection_DB db = connection_DB.getInstance();
-        System.out.println("get_connexion");
         Connection connection = db.getConnection();
 
-        int user_id = 0;
-        int store_id = 0;
 
         try {
 
@@ -83,8 +78,6 @@ public class disp_stock {
                 Object[] data = {name_product, quantity_product};
                 model.addRow(data);
 
-                System.out.println(name_product);
-                System.out.println(quantity_product);
 
             }
 
@@ -100,17 +93,47 @@ public class disp_stock {
         frame.setVisible(true);
 
 
-
-
         b_submit.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
+
+                try {
+
+                    String product = String.valueOf(comb_obj.getSelectedItem());
+
+                    PreparedStatement statement = connection.prepareStatement("SELECT id FROM product WHERE name = ?");
+                    statement.setString(1, product);
+                    ResultSet result = statement.executeQuery();
+                    while (result.next()) {
+
+                        product = result.getString("id");
+
+                    }
+
+                    PreparedStatement statement2 = connection.prepareStatement("UPDATE product_in_store  SET quantity = quantity - ? WHERE product_id = ? AND store_id = ?;");
+
+                    String quantity = tf_quanti_sell.getText();
+
+                    statement2.setString(1, quantity);
+                    statement2.setString(2, product);
+                    statement2.setString(3, String.valueOf(store_id));
+                    statement2.executeUpdate();
+
+
+                }
+                catch (SQLException exp) {
+                    exp.printStackTrace();
+                }
+
+                //update le tableau en interface graphique
+
 
             }
         });
     }
-
 
 
 }
