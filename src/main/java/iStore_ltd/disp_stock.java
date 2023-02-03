@@ -25,12 +25,15 @@ public class disp_stock {
     private JScrollPane data_table;
     private int user_id = 0;
     private int store_id = 0;
+    private String user_pseudo = null;
 
-    public disp_stock() {
+    public disp_stock(String email) {
+
+        System.out.println(email);
 
         tab_data.setModel(new DefaultTableModel(
                 null,
-                new String[]{"nom du produit","quantité"}
+                new String[]{"nom du produit","quantité","prix"}
         ));
 
 
@@ -41,7 +44,7 @@ public class disp_stock {
         try {
 
             Statement statement1 = connection.createStatement();
-            ResultSet result1 = statement1.executeQuery("SELECT name FROM product");
+            ResultSet result1 = statement1.executeQuery("SELECT name FROM product;");
             while (result1.next()) {
 
                 String name_product = result1.getString("name");
@@ -50,16 +53,18 @@ public class disp_stock {
             }
 
 
-            Statement statement2 = connection.createStatement();
-            ResultSet result2 = statement2.executeQuery("SELECT id,pseudo FROM users");
+            PreparedStatement statement2 = connection.prepareStatement("SELECT email_id, pseudo FROM users WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
+            statement2.setString(1, email);
+            ResultSet result2 = statement2.executeQuery();
             while (result2.next()) {
 
-                user_id = result2.getInt("id");
+                user_id = result2.getInt("email_id");
+                user_pseudo = result2.getString("pseudo");
 
             }
 
-            PreparedStatement statement3 = connection.prepareStatement("SELECT store_id FROM user_store WHERE user_id=?");
-            statement3.setString(1, String.valueOf(user_id));
+            PreparedStatement statement3 = connection.prepareStatement("SELECT store_id FROM user_store WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
+            statement3.setString(1, String.valueOf(email));
             ResultSet result3 = statement3.executeQuery();
             while (result3.next()) {
 
@@ -67,16 +72,17 @@ public class disp_stock {
 
             }
 
-            PreparedStatement statement4 = connection.prepareStatement("SELECT product.name, product_in_store.quantity FROM product JOIN product_in_store ON product.id = product_in_store.product_id WHERE store_id = ?;");
+            PreparedStatement statement4 = connection.prepareStatement("SELECT product.name, product_in_store.quantity, product.price FROM product JOIN product_in_store ON product.id = product_in_store.product_id WHERE store_id = ?;");
             statement4.setString(1, String.valueOf(store_id));
             ResultSet result4 = statement4.executeQuery();
             while (result4.next()) {
 
                 String name_product = result4.getString("product.name");
                 int quantity_product = result4.getInt("product_in_store.quantity");
+                int product_price = result4.getInt("product.price");
 
                 DefaultTableModel model = (DefaultTableModel) tab_data.getModel();
-                Object[] data = {name_product, quantity_product};
+                Object[] data = {name_product, quantity_product,product_price};
                 model.addRow(data);
 
 
@@ -107,7 +113,7 @@ public class disp_stock {
 
                     String product = String.valueOf(comb_obj.getSelectedItem());
 
-                    PreparedStatement statement = connection.prepareStatement("SELECT id FROM product WHERE name = ?");
+                    PreparedStatement statement = connection.prepareStatement("SELECT id FROM product WHERE name = ?;");
                     statement.setString(1, product);
                     ResultSet result = statement.executeQuery();
                     while (result.next()) {
@@ -146,7 +152,7 @@ public class disp_stock {
                     DefaultTableModel model = (DefaultTableModel) tab_data.getModel();
                     model.setValueAt(value_int, product_id, 1);
 
-                    PreparedStatement statement2 = connection.prepareStatement("UPDATE product_in_store  SET quantity = ? WHERE product_id = ? AND store_id = ?;");
+                    PreparedStatement statement2 = connection.prepareStatement("UPDATE product_in_store SET quantity = ? WHERE product_id = ? AND store_id = ?;");
 
                     statement2.setString(1, String.valueOf(value_int));
                     statement2.setString(2, product);
@@ -157,13 +163,7 @@ public class disp_stock {
                 }
                 catch(SQLException exp){
                         exp.printStackTrace();
-                    }
-
-
-
-                //update le tableau en interface graphique
-
-
+                }
             }
         });
     }

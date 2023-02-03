@@ -48,6 +48,8 @@ public class register_menu {
 
                 //get the e-mail
                 String email = tf_email.getText();
+                String email_id = null;
+
                 if(email.equals("")){
                     JOptionPane.showMessageDialog(frame, "Erreur : Le champ e-mail est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
@@ -72,7 +74,7 @@ public class register_menu {
 
                     //requete préparer
                     try {
-                        PreparedStatement statement = connection.prepareStatement("SELECT email FROM users WHERE email = ?");
+                        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
                         statement.setString(1, email);
                         ResultSet result = statement.executeQuery();
 
@@ -94,17 +96,18 @@ public class register_menu {
 
                             Boolean find_in_whitelist = false;
 
-                            PreparedStatement statement2 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
+                            PreparedStatement statement2 = connection.prepareStatement("SELECT * FROM whitelist WHERE email = ?;");
                             statement2.setString(1, email);
                             ResultSet result2 = statement2.executeQuery();
 
                             while (result2.next()) {
 
+                                email_id = result2.getString("id");
                                 find_in_whitelist = true;
 
                             }
 
-                            PreparedStatement statement3 = connection.prepareStatement("SELECT email FROM admin WHERE email = ?");
+                            PreparedStatement statement3 = connection.prepareStatement("SELECT * FROM admin WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
                             statement3.setString(1, email);
                             ResultSet result3 = statement3.executeQuery();
 
@@ -126,8 +129,8 @@ public class register_menu {
 
                                         String crypt_password = BCrypt.hashpw(String.valueOf(ptf_password.getPassword()), BCrypt.gensalt());
 
-                                        PreparedStatement statement4 = connection.prepareStatement("INSERT into users (email,pseudo,password,role) VALUES (?,?,?,?);");
-                                        statement4.setString(1, email);
+                                        PreparedStatement statement4 = connection.prepareStatement("INSERT INTO users (email_id, pseudo, password, role) VALUES (?,?,?,?);");
+                                        statement4.setString(1, email_id);
                                         statement4.setString(2, pseudo);
                                         statement4.setString(3, crypt_password);
                                         statement4.setString(4, role);

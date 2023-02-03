@@ -61,7 +61,7 @@ public class login_menu {
                     //on verifie si le compte existe
 
                     try {
-                        PreparedStatement statement = connection.prepareStatement("SELECT password FROM users WHERE email = ?");
+                        PreparedStatement statement = connection.prepareStatement("SELECT password FROM users WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
                         statement.setString(1, email);
                         ResultSet result = statement.executeQuery();
 
@@ -83,7 +83,7 @@ public class login_menu {
 
                                 //frame.setVisible(false);
                                 frame.dispose();
-                                new disp_stock();
+                                new disp_stock(email);
 
 
                             }
