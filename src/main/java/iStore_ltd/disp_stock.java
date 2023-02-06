@@ -24,7 +24,7 @@ public class disp_stock {
     private JTable tab_data;
     private JScrollPane data_table;
     private JButton b_menu;
-    private int user_id = 0;
+    private String user_id = null;
     private int store_id = 0;
     private String user_pseudo = null;
 
@@ -86,7 +86,7 @@ public class disp_stock {
             ResultSet result2 = statement2.executeQuery();
             while (result2.next()) {
 
-                user_id = result2.getInt("email_id");
+                user_id = result2.getString("email_id");
                 user_pseudo = result2.getString("pseudo");
 
             }
@@ -250,8 +250,8 @@ public class disp_stock {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                System.out.println(email);
-                new user_menu(email);
+                System.out.println(user_id);
+                new user_menu(user_id);
             }
         });
     }

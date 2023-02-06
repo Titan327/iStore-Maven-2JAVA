@@ -1,5 +1,7 @@
 package iStore_ltd;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +32,7 @@ public class user_menu {
     private JLabel lb_role_user;
     private JLabel lb_role_user_result;
     private JButton b_change;
-public user_menu(String email) {
+public user_menu(String email_id) {
 
     tf_pseudo.setText("test");
 
@@ -39,14 +41,15 @@ public user_menu(String email) {
 
     try {
 
-        PreparedStatement statement1 = connection.prepareStatement("SELECT users.pseudo, users.role FROM whitelist JOIN users ON whitelist.id = users.email_id WHERE whitelist.email = ?;");
-        statement1.setString(1, email);
+        PreparedStatement statement1 = connection.prepareStatement("SELECT users.pseudo, users.role, whitelist.email FROM whitelist JOIN users ON whitelist.id = users.email_id WHERE whitelist.id = ?;");
+        statement1.setString(1, email_id);
         ResultSet result1 = statement1.executeQuery();
 
         while (result1.next()) {
 
             String pseudo = result1.getString("pseudo");
             String role = result1.getString("role");
+            String email = result1.getString("email");
 
             tf_email.setText(email);
             tf_pseudo.setText(pseudo);
@@ -78,26 +81,36 @@ public user_menu(String email) {
 
             try {
 
-                if(password.equals(password_rep)){
+                //finir les upsates
+                if(password.length() >= 10 & password.matches(".*[A-Z].*") & password.matches("^.*[^a-zA-Z0-9 ].*$") /*& !password.contains(" ")*/ ) {
 
-                    PreparedStatement statement4 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE email = ?;");
-                    statement4.setString(1, new_email);
-                    statement4.setString(2, email);
-                    statement4.executeUpdate();
+                    if (password.equals(password_rep)) {
 
+                        PreparedStatement statement4 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE id = ?;");
+                        statement4.setString(1, new_email);
+                        statement4.setString(2, email_id);
+                        statement4.executeUpdate();
+
+                        String crypt_password = BCrypt.hashpw(password, BCrypt.gensalt());
+
+                        PreparedStatement statement5 = connection.prepareStatement("UPDATE user SET pseudo = ?,password = ? WHERE id = ?;");
+                        statement5.setString(1, new_pseudo);
+                        statement5.setString(2, crypt_password);
+                        statement5.setString(3, email_id);
+                        statement5.executeUpdate();
+
+                    }
+                    else {
+
+                        JOptionPane.showMessageDialog(frame, "Erreur : Erreur le mot de passe a mal était répeté", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                    }
                 }
                 else{
 
-                    JOptionPane.showMessageDialog(frame, "Erreur : Erreur le mot de passe a mal était répeté", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    JOptionPane.showMessageDialog(frame, "Erreur : Votre mot de passe doit contenir au moin 10 caractere, dont au moin un caractere special et une majuscule", "Erreur", JOptionPane.ERROR_MESSAGE);
 
                 }
-
-                PreparedStatement statement4 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE email = ?;");
-                statement4.setString(1, new_email);
-                statement4.setString(2, email);
-                statement4.executeUpdate();
-
             }
             catch (SQLException exp) {
                 exp.printStackTrace();
