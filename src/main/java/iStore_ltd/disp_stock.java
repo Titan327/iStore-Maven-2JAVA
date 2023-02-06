@@ -23,6 +23,7 @@ public class disp_stock {
     private JComboBox comb_sell_add;
     private JTable tab_data;
     private JScrollPane data_table;
+    private JButton b_menu;
     private int user_id = 0;
     private int store_id = 0;
     private String user_pseudo = null;
@@ -124,20 +125,20 @@ public class disp_stock {
             }
 
             boolean find = false;
+
             for (int i = 0; i < list.length; i++) {
+
                 find = false;
-                //System.out.println(list[i]);
+
                 for (int j = 0; j < list2.length; j++) {
-                    //System.out.println(list2[j]);
+
                     if(list[i].equals(list2[j])){
                         find = true;
                         break;
+
                     }
                 }
-                if(find){
-                    System.out.println("trouvé");
-                }
-                else {
+                if(!find){
                     PreparedStatement statement5 = connection.prepareStatement("INSERT INTO product_in_store (product_id, store_id, quantity) VALUES (?,?,?);");
                     statement5.setString(1, list[i]);
                     statement5.setString(2, String.valueOf(store_id));
@@ -187,13 +188,15 @@ public class disp_stock {
                         product_name = result.getString("name");
                         product_price = result.getString("price");
 
-                        System.out.println("product from db" + product);
-
                     }
 
 
 
                     String quantity = tf_quanti_sell.getText();
+                    if(quantity.equals("") || quantity.equals("0")){
+                        JOptionPane.showMessageDialog(frame, "Erreur : La quantité ne peut pas etre null", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
 
                     //System.out.println(tab_data.getRowCount());
 
@@ -243,7 +246,13 @@ public class disp_stock {
                 }
             }
         });
+        b_menu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                System.out.println(email);
+                new user_menu(email);
+            }
+        });
     }
-
-
 }
