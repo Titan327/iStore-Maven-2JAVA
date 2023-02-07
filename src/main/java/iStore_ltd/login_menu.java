@@ -38,9 +38,7 @@ public class login_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                System.out.println("get_instance");
                 connection_DB db = connection_DB.getInstance();
-                System.out.println("get_connexion");
                 Connection connection = db.getConnection();
 
                 //get the e-mail

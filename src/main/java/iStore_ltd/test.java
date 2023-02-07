@@ -1,12 +1,13 @@
 package iStore_ltd;
 
+import javax.swing.JOptionPane;
 
 public class test {
     public static void main(String[] args) {
-        int[] numbers = {1, 2, 3};
-        int[] newNumbers = new int[numbers.length + 1];
-        System.arraycopy(numbers, 0, newNumbers, 0, numbers.length);
-        newNumbers[newNumbers.length - 1] = 4;
-        System.out.println(newNumbers);
+        int result = JOptionPane.showConfirmDialog(null, "Voulez-vous continuer ?", "Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if (result == JOptionPane.YES_OPTION) {
+            System.out.println("L'utilisateur a cliqué sur 'Oui'");
+        }
     }
 }

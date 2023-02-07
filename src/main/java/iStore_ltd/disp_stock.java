@@ -24,13 +24,13 @@ public class disp_stock {
     private JTable tab_data;
     private JScrollPane data_table;
     private JButton b_menu;
+    private JButton b_admin;
     private String user_id = null;
     private int store_id = 0;
     private String user_pseudo = null;
+    private String role = null;
 
     public disp_stock(String email) {
-
-        //System.out.println(email);
 
         tab_data.setModel(new DefaultTableModel(
                 null,
@@ -75,19 +75,14 @@ public class disp_stock {
 
             }
 
-            /*
-            for (int i = 0; i < list.length; i++) {
-                System.out.println(list[i]);
-            }
-            */
-
-            PreparedStatement statement2 = connection.prepareStatement("SELECT email_id, pseudo FROM users WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
+            PreparedStatement statement2 = connection.prepareStatement("SELECT email_id, pseudo, role FROM users WHERE email_id = (SELECT id FROM whitelist WHERE email = ?);");
             statement2.setString(1, email);
             ResultSet result2 = statement2.executeQuery();
             while (result2.next()) {
 
                 user_id = result2.getString("email_id");
                 user_pseudo = result2.getString("pseudo");
+                role = result2.getString("role");
 
             }
 
@@ -157,6 +152,12 @@ public class disp_stock {
             exp.printStackTrace();
         }
 
+        if(!role.equals("admin")){
+
+            b_admin.setVisible(false);
+
+        }
+
         JFrame frame = new JFrame("iStore");
         Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
         frame.setIconImage(icon);
@@ -197,8 +198,6 @@ public class disp_stock {
                         JOptionPane.showMessageDialog(frame, "Erreur : La quantité ne peut pas etre null", "Erreur", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-
-                    //System.out.println(tab_data.getRowCount());
 
                     for (int i = 0; i < tab_data.getRowCount() ; i++) {
 
@@ -250,8 +249,13 @@ public class disp_stock {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                System.out.println(user_id);
                 new user_menu(user_id);
+            }
+        });
+        b_admin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
