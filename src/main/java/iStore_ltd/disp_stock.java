@@ -256,6 +256,9 @@ public class disp_stock {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                frame.dispose();
+                new admin_menu();
+
             }
         });
     }

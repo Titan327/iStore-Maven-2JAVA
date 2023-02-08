@@ -1,6 +1,9 @@
 package iStore_ltd;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class admin_menu {
     private JLabel lb_logo;
@@ -34,4 +37,23 @@ public class admin_menu {
     private JTextField textField2;
     private JButton b_add_product;
     private JButton b_search;
+    private JPanel admin_menu;
+
+    public admin_menu() {
+
+    JFrame frame = new JFrame("iStore");
+    Image icon = new ImageIcon("src/main/resources/image/icon.png").getImage();
+    frame.setIconImage(icon);
+    frame.setContentPane(this.admin_menu);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.pack();
+    frame.setVisible(true);
+
+    b_val_modif.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    });
+}
 }
