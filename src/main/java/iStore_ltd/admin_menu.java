@@ -49,6 +49,9 @@ public class admin_menu {
     private JPasswordField ptf_pswd;
     private JComboBox cb_store_new_user;
     private JButton b_del_user;
+    private JLabel lb_pswd;
+    private JLabel lb_pswd_rep;
+    private JLabel lb_store_user;
     private String user_search_id = null;
     private String role = null;
 
@@ -60,6 +63,16 @@ public class admin_menu {
         cb_store_user.setVisible(false);
         ptf_pswd_rep.setVisible(false);
         ptf_pswd.setVisible(false);
+
+        lb_email_search.setVisible(false);
+        lb_pseudo_search.setVisible(false);
+        lb_pswd.setVisible(false);
+        lb_pswd_rep.setVisible(false);
+        lb_role_search.setVisible(false);
+        lb_store_user.setVisible(false);
+
+        b_val_modif.setVisible(false);
+        b_del_user.setVisible(false);
 
 
 
@@ -169,6 +182,19 @@ public class admin_menu {
                         ptf_pswd.setVisible(true);
                         cb_role.setVisible(true);
                         cb_store_user.setVisible(true);
+
+
+                        lb_email_search.setVisible(true);
+                        lb_pseudo_search.setVisible(true);
+                        lb_pswd.setVisible(true);
+                        lb_pswd_rep.setVisible(true);
+                        lb_role_search.setVisible(true);
+                        lb_store_user.setVisible(true);
+
+                        b_val_modif.setVisible(true);
+                        b_del_user.setVisible(true);
+
+
                     }
                     if(!find){
 
@@ -179,6 +205,8 @@ public class admin_menu {
                 catch (SQLException exp) {
                     exp.printStackTrace();
                 }
+
+                frame.pack();
 
             }
         });
@@ -650,6 +678,16 @@ public class admin_menu {
                         ptf_pswd.setVisible(false);
                         cb_role.setVisible(false);
                         cb_store_user.setVisible(false);
+
+                        lb_email_search.setVisible(false);
+                        lb_pseudo_search.setVisible(false);
+                        lb_pswd.setVisible(false);
+                        lb_pswd_rep.setVisible(false);
+                        lb_role_search.setVisible(false);
+                        lb_store_user.setVisible(false);
+
+                        b_val_modif.setVisible(false);
+                        b_del_user.setVisible(false);
 
 
                     }
