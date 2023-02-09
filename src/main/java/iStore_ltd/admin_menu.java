@@ -146,7 +146,7 @@ public class admin_menu {
                         user_search_id = result1.getString("id");
 
                         tf_email.setText(email);
-                        tf_pseudo.setText(role);
+                        tf_pseudo.setText(pseudo);
 
                         DefaultComboBoxModel model = (DefaultComboBoxModel) cb_role.getModel();
                         cb_role.setSelectedIndex(model.getIndexOf(role));
@@ -514,7 +514,7 @@ public class admin_menu {
                         statement1.setString(3, user_search_id);
                         statement1.executeUpdate();
 
-                        PreparedStatement statement2 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE email_id = ? ;");
+                        PreparedStatement statement2 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE id = ? ;");
                         statement2.setString(1, email);
                         statement2.setString(2, user_search_id);
                         statement2.executeUpdate();
@@ -526,11 +526,16 @@ public class admin_menu {
 
                     }
 
+                    PreparedStatement statement2 = connection.prepareStatement("UPDATE user_store SET store_id = (SELECT id FROM store WHERE name = ?) WHERE email_id = ?;");
+                    statement2.setString(1, store);
+                    statement2.setString(2, user_search_id);
+                    statement2.executeUpdate();
 
-                    PreparedStatement statement3 = connection.prepareStatement("SELECT email_id FROM admin WHERE email_id = ?");
-                    statement3.setString(1, user_search_id);
-                    ResultSet result3 = statement3.executeQuery();
-                    while (result3.next()) {
+
+                    PreparedStatement statement_a = connection.prepareStatement("SELECT email_id FROM admin WHERE email_id = ?");
+                    statement_a.setString(1, user_search_id);
+                    ResultSet result_a = statement_a.executeQuery();
+                    while (result_a.next()) {
 
                         find = true;
 
