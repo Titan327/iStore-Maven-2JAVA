@@ -14,8 +14,8 @@ public class admin_menu {
     private JLabel lb_logo;
     private JLabel lb_search_user;
     private JLabel lb_whitelist;
-    private JLabel lb_pseudo_search_admin;
-    private JTextField tf_pseudo_search_admin;
+    private JLabel lb_email_search_admin;
+    private JTextField tf_email_search_admin;
     private JLabel lb_email_search;
     private JTextField tf_email;
     private JLabel lb_pseudo_search;
@@ -47,6 +47,7 @@ public class admin_menu {
     private JComboBox cb_store_user;
     private JPasswordField ptf_pswd_rep;
     private JPasswordField ptf_pswd;
+    private JComboBox cb_store_new_user;
     private String user_search_id = null;
 
     public admin_menu(String email_admin) {
@@ -86,6 +87,7 @@ public class admin_menu {
 
                 cb_nom_store_del.addItem(name_shop);
                 cb_store_user.addItem(name_shop);
+                cb_store_new_user.addItem(name_shop);
 
             }
 
@@ -129,10 +131,10 @@ public class admin_menu {
 
                 try {
 
-                    String search_pseudo = tf_pseudo_search_admin.getText();
+                    String search_email = tf_email_search_admin.getText();
 
-                    PreparedStatement statement1 = connection.prepareStatement("SELECT whitelist.email, users.pseudo, users.role, store.name, whitelist.id FROM whitelist JOIN users ON whitelist.id = users.email_id LEFT JOIN user_store ON whitelist.id = user_store.email_id LEFT JOIN store ON user_store.store_id = store.id WHERE users.pseudo = ?;");
-                    statement1.setString(1, search_pseudo);
+                    PreparedStatement statement1 = connection.prepareStatement("SELECT whitelist.email, users.pseudo, users.role, store.name, whitelist.id FROM whitelist JOIN users ON whitelist.id = users.email_id LEFT JOIN user_store ON whitelist.id = user_store.email_id LEFT JOIN store ON user_store.store_id = store.id WHERE whitelist.email = ?;");
+                    statement1.setString(1, search_email);
                     ResultSet result1 = statement1.executeQuery();
 
                     while (result1.next()) {
@@ -187,6 +189,10 @@ public class admin_menu {
 
                     String email_whitelist = tf_email_whitelist.getText();
                     String role = String.valueOf(cb_role_new.getSelectedItem()).toLowerCase();
+                    String store = String.valueOf(cb_store_new_user.getSelectedItem());
+
+                    String new_user_id = null;
+
 
                     PreparedStatement statement1 = connection.prepareStatement("SELECT email FROM whitelist WHERE email = ?");
                     statement1.setString(1, email_whitelist);
@@ -197,6 +203,7 @@ public class admin_menu {
                         find = true;
 
                     }
+
                     if(find){
 
                         JOptionPane.showMessageDialog(frame, "Erreur : Email déjà dans la whiteliste", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -208,13 +215,18 @@ public class admin_menu {
                         statement2.setString(1, email_whitelist);
                         statement2.executeUpdate();
 
+                        PreparedStatement statement3 = connection.prepareStatement("INSERT INTO user_store (email_id, store_id) SELECT whitelist.id, store.id FROM whitelist JOIN store ON store.name = ? WHERE whitelist.email = ?;");
+                        statement3.setString(1, store);
+                        statement3.setString(2, email_whitelist);
+                        statement3.executeUpdate();
+
                         if(role.equals("admin")){
 
                             System.out.println("la");
 
-                            PreparedStatement statement3 = connection.prepareStatement("INSERT INTO admin (email_id) SELECT id FROM whitelist WHERE email = ?;");
-                            statement3.setString(1, email_whitelist);
-                            statement3.executeUpdate();
+                            PreparedStatement statement4 = connection.prepareStatement("INSERT INTO admin (email_id) SELECT id FROM whitelist WHERE email = ?;");
+                            statement4.setString(1, email_whitelist);
+                            statement4.executeUpdate();
 
                         }
 
@@ -276,6 +288,7 @@ public class admin_menu {
                         }
                         cb_nom_store_del.removeItem(store);
                         cb_store_user.removeItem(store);
+                        cb_store_new_user.removeItem(store);
 
 
                         JOptionPane.showMessageDialog(frame, "Magasin supprimé avec succes !", "Suppression", JOptionPane.INFORMATION_MESSAGE);
@@ -318,7 +331,7 @@ public class admin_menu {
 
                         if(!find){
 
-                            PreparedStatement statement2 = connection.prepareStatement("DELETE FROM store  WHERE id = ?;");
+                            PreparedStatement statement2 = connection.prepareStatement("INSERT INTO store (name) VALUES (?);");
                             statement2.setString(1, new_store);
                             statement2.executeUpdate();
 
@@ -329,6 +342,7 @@ public class admin_menu {
                             tf_store_name.setText("");
                             cb_nom_store_del.addItem(new_store);
                             cb_store_user.addItem(new_store);
+                            cb_store_new_user.addItem(new_store);
 
                             JOptionPane.showMessageDialog(frame, "Magasin crée avec succes !", "Création", JOptionPane.INFORMATION_MESSAGE);
 
@@ -487,6 +501,8 @@ public class admin_menu {
                 String password = String.valueOf(ptf_pswd.getPassword());
                 String password_rep = String.valueOf(ptf_pswd_rep.getPassword());
 
+                boolean find = false;
+
 
                 try {
 
@@ -495,11 +511,12 @@ public class admin_menu {
                         PreparedStatement statement1 = connection.prepareStatement("UPDATE users SET pseudo = ?, role = ? WHERE email_id = ? ;");
                         statement1.setString(1, pseudo);
                         statement1.setString(2, role);
-                        statement1.setString(2, user_search_id);
+                        statement1.setString(3, user_search_id);
                         statement1.executeUpdate();
 
                         PreparedStatement statement2 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE email_id = ? ;");
                         statement2.setString(1, email);
+                        statement2.setString(2, user_search_id);
                         statement2.executeUpdate();
 
                     }
@@ -509,6 +526,32 @@ public class admin_menu {
 
                     }
 
+
+                    PreparedStatement statement3 = connection.prepareStatement("SELECT email_id FROM admin WHERE email_id = ?");
+                    statement3.setString(1, user_search_id);
+                    ResultSet result3 = statement3.executeQuery();
+                    while (result3.next()) {
+
+                        find = true;
+
+                    }
+
+                    if(!find & role.equals("admin")){
+
+                        PreparedStatement statement4 = connection.prepareStatement("INSERT INTO admin VALUES (?)");
+                        statement4.setString(1, user_search_id);
+                        statement4.executeUpdate();
+
+                    }
+                    if(find & role.equals("user")){
+
+                        PreparedStatement statement4 = connection.prepareStatement("DELETE FROM admin  WHERE email_id = ?;");
+                        statement4.setString(1, user_search_id);
+                        statement4.executeUpdate();
+
+                    }
+
+
                     if(!password.equals("")) {
                         if (password.length() >= 10 & password.matches(".*[A-Z].*") & password.matches("^.*[^a-zA-Z0-9 ].*$") /*& !password.contains(" ")*/) {
 
@@ -516,11 +559,10 @@ public class admin_menu {
 
                                 String crypt_password = BCrypt.hashpw(password, BCrypt.gensalt());
 
-                                PreparedStatement statement6 = connection.prepareStatement("UPDATE users SET pseudo = ?,password = ? WHERE email_id = ?;");
-                                statement6.setString(1, "new_pseudo");
-                                statement6.setString(2, crypt_password);
-                                statement6.setString(3, "email_id");
-                                statement6.executeUpdate();
+                                PreparedStatement statement4 = connection.prepareStatement("UPDATE users SET password = ? WHERE email_id = ?;");
+                                statement4.setString(1, crypt_password);
+                                statement4.setString(2, user_search_id);
+                                statement4.executeUpdate();
 
                             } else {
 
