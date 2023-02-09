@@ -41,9 +41,7 @@ public class register_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                System.out.println("get_instance");
                 connection_DB db = connection_DB.getInstance();
-                System.out.println("get_connexion");
                 Connection connection = db.getConnection();
 
                 //get the e-mail
@@ -88,8 +86,6 @@ public class register_menu {
                         if(find_in_user){
 
                             JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail est déja associer a un compte", "Erreur", JOptionPane.ERROR_MESSAGE);
-
-                            System.out.println("user existant");
 
                         }
                         else {
@@ -136,10 +132,6 @@ public class register_menu {
                                         statement4.setString(4, role);
                                         statement4.executeUpdate();
 
-                                        System.out.println("user crée");
-
-                                        //frame.setVisible(false);
-
                                         frame.dispose();
                                         new login_menu();
 
@@ -161,7 +153,6 @@ public class register_menu {
                             else{
 
                                 JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail n'est pas autorisé", "Erreur", JOptionPane.ERROR_MESSAGE);
-                                System.out.println("user not whitelist");
 
                             }
                         }

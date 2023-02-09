@@ -228,8 +228,6 @@ public class admin_menu {
 
                         if(role.equals("admin")){
 
-                            System.out.println("la");
-
                             PreparedStatement statement4 = connection.prepareStatement("INSERT INTO admin (email_id) SELECT id FROM whitelist WHERE email = ?;");
                             statement4.setString(1, email_whitelist);
                             statement4.executeUpdate();

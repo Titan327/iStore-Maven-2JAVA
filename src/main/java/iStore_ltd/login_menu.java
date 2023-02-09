@@ -74,12 +74,8 @@ public class login_menu {
 
                         if(find_in_user){
 
-                            System.out.println("user existant");
-
                             if (BCrypt.checkpw(password, password_db)){
-                                System.out.println("mdp bon");
 
-                                //frame.setVisible(false);
                                 frame.dispose();
                                 new disp_stock(email);
 
@@ -89,14 +85,12 @@ public class login_menu {
 
                                 JOptionPane.showMessageDialog(frame, "Erreur : Mot de passe erroné", "Erreur", JOptionPane.ERROR_MESSAGE);
 
-                                System.out.println("mdp mauvais");
                             }
                         }
                         else {
 
                             JOptionPane.showMessageDialog(frame, "Erreur : Cette adresse mail n'est associée à aucun compte, essayer de vous inscrire", "Erreur", JOptionPane.ERROR_MESSAGE);
 
-                            System.out.println("user non existant");
                         }
 
                     } catch (SQLException exp) {

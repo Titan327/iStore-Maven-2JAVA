@@ -24,7 +24,6 @@ public class connection_DB {
     public connection_DB() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            //System.out.println("co_via_driver");
             connection = DriverManager.getConnection(url, user, passwd);
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -37,10 +36,8 @@ public class connection_DB {
                 //on test si l'instance est null ou si la connexion n'est pas valide.
                 if (instance == null || !connection.isValid(5)) {
                     //on se reconecte
-                    //System.out.println("nv_instance");
                     instance = new connection_DB();
                 }
-                //System.out.println("return_instance");
                 return instance;
             }
         catch (SQLException e) {
@@ -52,8 +49,6 @@ public class connection_DB {
 
 
     public Connection getConnection() {
-
-        //System.out.println("return_conn");
 
         return connection;
     }
