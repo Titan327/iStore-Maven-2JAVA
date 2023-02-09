@@ -1,5 +1,7 @@
 package iStore_ltd;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -43,6 +45,9 @@ public class admin_menu {
     private JComboBox cb_role_new;
     private JTable t_shop;
     private JComboBox cb_store_user;
+    private JPasswordField ptf_pswd_rep;
+    private JPasswordField ptf_pswd;
+    private String user_search_id = null;
 
     public admin_menu(String email_admin) {
 
@@ -126,7 +131,7 @@ public class admin_menu {
 
                     String search_pseudo = tf_pseudo_search_admin.getText();
 
-                    PreparedStatement statement1 = connection.prepareStatement("SELECT whitelist.email, users.pseudo, users.role, store.name FROM whitelist JOIN users ON whitelist.id = users.email_id LEFT JOIN user_store ON whitelist.id = user_store.email_id LEFT JOIN store ON user_store.store_id = store.id WHERE users.pseudo = ?;");
+                    PreparedStatement statement1 = connection.prepareStatement("SELECT whitelist.email, users.pseudo, users.role, store.name, whitelist.id FROM whitelist JOIN users ON whitelist.id = users.email_id LEFT JOIN user_store ON whitelist.id = user_store.email_id LEFT JOIN store ON user_store.store_id = store.id WHERE users.pseudo = ?;");
                     statement1.setString(1, search_pseudo);
                     ResultSet result1 = statement1.executeQuery();
 
@@ -136,6 +141,7 @@ public class admin_menu {
                         String pseudo = result1.getString("pseudo");
                         String role = result1.getString("role");
                         String store_name = result1.getString("name");
+                        user_search_id = result1.getString("id");
 
                         tf_email.setText(email);
                         tf_pseudo.setText(role);
@@ -464,6 +470,73 @@ public class admin_menu {
                     exp.printStackTrace();
                 }
 
+            }
+        });
+        b_val_modif.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
+
+                String email = tf_email.getText();
+                String pseudo = tf_pseudo.getText();
+                String role = String.valueOf(cb_role.getSelectedItem());
+                String store = String.valueOf(cb_store_user.getSelectedItem());
+
+                String password = String.valueOf(ptf_pswd.getPassword());
+                String password_rep = String.valueOf(ptf_pswd_rep.getPassword());
+
+
+                try {
+
+                    if(!email.equals("") || !pseudo.equals("")){
+
+                        PreparedStatement statement1 = connection.prepareStatement("UPDATE users SET pseudo = ?, role = ? WHERE email_id = ? ;");
+                        statement1.setString(1, pseudo);
+                        statement1.setString(2, role);
+                        statement1.setString(2, user_search_id);
+                        statement1.executeUpdate();
+
+                        PreparedStatement statement2 = connection.prepareStatement("UPDATE whitelist SET email = ? WHERE email_id = ? ;");
+                        statement2.setString(1, email);
+                        statement2.executeUpdate();
+
+                    }
+                    else{
+
+                        JOptionPane.showMessageDialog(frame, "Erreur : Les champs pseudo ou email ne peut etre vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                    }
+
+                    if(!password.equals("")) {
+                        if (password.length() >= 10 & password.matches(".*[A-Z].*") & password.matches("^.*[^a-zA-Z0-9 ].*$") /*& !password.contains(" ")*/) {
+
+                            if (password.equals(password_rep)) {
+
+                                String crypt_password = BCrypt.hashpw(password, BCrypt.gensalt());
+
+                                PreparedStatement statement6 = connection.prepareStatement("UPDATE users SET pseudo = ?,password = ? WHERE email_id = ?;");
+                                statement6.setString(1, "new_pseudo");
+                                statement6.setString(2, crypt_password);
+                                statement6.setString(3, "email_id");
+                                statement6.executeUpdate();
+
+                            } else {
+
+                                JOptionPane.showMessageDialog(frame, "Erreur : Erreur le mot de passe a mal été répeté", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                            }
+                        } else {
+
+                            JOptionPane.showMessageDialog(frame, "Erreur : Votre mot de passe doit contenir au moin 10 caractères, dont au moin un caractère special et une majuscule", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                        }
+                    }
+
+                } catch(SQLException exp){
+                    exp.printStackTrace();
+                }
             }
         });
     }
