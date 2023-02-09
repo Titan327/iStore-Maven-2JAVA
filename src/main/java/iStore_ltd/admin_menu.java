@@ -48,7 +48,9 @@ public class admin_menu {
     private JPasswordField ptf_pswd_rep;
     private JPasswordField ptf_pswd;
     private JComboBox cb_store_new_user;
+    private JButton b_del_user;
     private String user_search_id = null;
+    private String role = null;
 
     public admin_menu(String email_admin) {
 
@@ -56,6 +58,8 @@ public class admin_menu {
         tf_pseudo.setVisible(false);
         cb_role.setVisible(false);
         cb_store_user.setVisible(false);
+        ptf_pswd_rep.setVisible(false);
+        ptf_pswd.setVisible(false);
 
 
 
@@ -141,7 +145,7 @@ public class admin_menu {
 
                         String email = result1.getString("email");
                         String pseudo = result1.getString("pseudo");
-                        String role = result1.getString("role");
+                        role = result1.getString("role");
                         String store_name = result1.getString("name");
                         user_search_id = result1.getString("id");
 
@@ -157,6 +161,8 @@ public class admin_menu {
 
                         tf_email.setVisible(true);
                         tf_pseudo.setVisible(true);
+                        ptf_pswd_rep.setVisible(true);
+                        ptf_pswd.setVisible(true);
                         cb_role.setVisible(true);
                         cb_store_user.setVisible(true);
                     }
@@ -584,6 +590,62 @@ public class admin_menu {
                 } catch(SQLException exp){
                     exp.printStackTrace();
                 }
+            }
+        });
+        b_del_user.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
+
+                try {
+
+                    int result = JOptionPane.showConfirmDialog(null, "Etes vous sûr de vouloir supprimer ce compte ?", "Suppression du compte", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                    if (result == JOptionPane.YES_OPTION) {
+
+                        PreparedStatement statement1 = connection.prepareStatement("DELETE FROM users WHERE email_id = ?;");
+                        statement1.setString(1, user_search_id);
+                        statement1.executeUpdate();
+
+                        PreparedStatement statement3 = connection.prepareStatement("DELETE FROM user_store WHERE email_id = ?;");
+                        statement3.setString(1, user_search_id);
+                        statement3.executeUpdate();
+
+                        if(role.equals("admin")){
+
+                            PreparedStatement statement4 = connection.prepareStatement("DELETE FROM admin WHERE email_id = ?;");
+                            statement4.setString(1, user_search_id);
+                            statement4.executeUpdate();
+
+                        }
+
+                        PreparedStatement statement2 = connection.prepareStatement("DELETE FROM whitelist WHERE id = ?;");
+                        statement2.setString(1, user_search_id);
+                        statement2.executeUpdate();
+
+                        tf_email_search_admin.setText("");
+                        tf_email.setText("");
+                        tf_pseudo.setText("");
+                        ptf_pswd_rep.setText("");
+                        ptf_pswd.setText("");
+
+                        tf_email.setVisible(false);
+                        tf_pseudo.setVisible(false);
+                        ptf_pswd_rep.setVisible(false);
+                        ptf_pswd.setVisible(false);
+                        cb_role.setVisible(false);
+                        cb_store_user.setVisible(false);
+
+
+                    }
+
+                }
+                catch (SQLException exp) {
+                    exp.printStackTrace();
+                }
+
             }
         });
     }
