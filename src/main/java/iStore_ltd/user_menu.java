@@ -3,6 +3,7 @@ package iStore_ltd;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,9 @@ public class user_menu {
     private JButton b_change;
     private JButton b_back;
     private JButton b_del;
+    private JComboBox cb_store;
+    private JButton b_search_user_store;
+    private JTable tb_user_store;
 
     private String new_email;
     private String role;
@@ -42,8 +46,15 @@ public class user_menu {
 
     tf_pseudo.setText("test");
 
+    tb_user_store.setModel(new DefaultTableModel(
+            null,
+            new String[]{"pseudo","e-mail","role"}
+    ));
+
     connection_DB db = connection_DB.getInstance();
     Connection connection = db.getConnection();
+
+
 
     try {
 
@@ -60,6 +71,16 @@ public class user_menu {
             tf_email.setText(new_email);
             tf_pseudo.setText(pseudo);
             lb_write_role.setText(role);
+
+        }
+
+        Statement statement2 = connection.createStatement();
+        ResultSet result2 = statement2.executeQuery("SELECT name FROM store;");
+
+        while (result2.next()) {
+
+            String store_name = result2.getString("name");
+            cb_store.addItem(store_name);
 
         }
     }
@@ -219,6 +240,9 @@ public class user_menu {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
+
                 try {
 
                     int result = JOptionPane.showConfirmDialog(null, "Etes vous sûr de vouloir supprimer votre compte ?", "Suppression du compte", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -254,6 +278,42 @@ public class user_menu {
                 catch (SQLException exp) {
                     exp.printStackTrace();
                 }
+            }
+        });
+        b_search_user_store.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                connection_DB db = connection_DB.getInstance();
+                Connection connection = db.getConnection();
+
+                String store = String.valueOf(cb_store.getSelectedItem());
+
+                DefaultTableModel model2 = (DefaultTableModel) tb_user_store.getModel();
+                model2.setRowCount(0);
+
+                try {
+
+                    PreparedStatement statement1 = connection.prepareStatement("SELECT users.pseudo, whitelist.email, users.role FROM users JOIN whitelist ON users.email_id = whitelist.id JOIN user_store ON users.email_id = user_store.email_id JOIN store ON user_store.store_id = store.id WHERE store.name = ?;");
+                    statement1.setString(1, store);
+                    ResultSet result1 = statement1.executeQuery();
+
+                    while (result1.next()) {
+
+                        String pseudo = result1.getString("pseudo");
+                        String email = result1.getString("email");
+                        String role = result1.getString("role");
+
+                        DefaultTableModel model = (DefaultTableModel) tb_user_store.getModel();
+                        Object[] data = {pseudo, email,role};
+                        model.addRow(data);
+
+                    }
+                }
+                catch (SQLException exp) {
+                    exp.printStackTrace();
+                }
+
             }
         });
     }
