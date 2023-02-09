@@ -184,8 +184,6 @@ public class user_menu {
                 if(all_ok){
 
                     JOptionPane.showMessageDialog(frame, "Changement effectué !", "Changement", JOptionPane.INFORMATION_MESSAGE);
-                    frame.dispose();
-                    new disp_stock(new_email);
 
                 }
             }
