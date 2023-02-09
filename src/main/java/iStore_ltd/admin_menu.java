@@ -527,6 +527,7 @@ public class admin_menu {
                     else{
 
                         JOptionPane.showMessageDialog(frame, "Erreur : Les champs pseudo ou email ne peut etre vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
 
                     }
 
@@ -576,14 +577,19 @@ public class admin_menu {
                             } else {
 
                                 JOptionPane.showMessageDialog(frame, "Erreur : Erreur le mot de passe a mal été répeté", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                return;
 
                             }
                         } else {
 
                             JOptionPane.showMessageDialog(frame, "Erreur : Votre mot de passe doit contenir au moin 10 caractères, dont au moin un caractère special et une majuscule", "Erreur", JOptionPane.ERROR_MESSAGE);
+                            return;
 
                         }
                     }
+
+                    JOptionPane.showMessageDialog(frame, "Utilisateur modifié !", "Modification", JOptionPane.INFORMATION_MESSAGE);
+
 
                 } catch(SQLException exp){
                     exp.printStackTrace();
