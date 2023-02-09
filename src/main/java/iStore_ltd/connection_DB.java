@@ -6,10 +6,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-//afin de ne pas avoir a se reconnecter a la base de donnée a chaque requete on vien crée un objet qui va crée une instance de connexion
-//il faut verifier qu'une seule connexion est en cours a chaque fois
+//afin de ne pas avoir à se reconnecter a la base de donnée a chaque requete on vient créer un objet qui va créer une instance de connexion
+//il faut verifier qu'une seule connexion est en cours à chaque fois
 //Si aucune instance n'est en cours on en crée une sinon on retourne simplement cet instance.
-//on appele cette technique du connection pooling.
+//on appelle cette technique du connection pooling.
 
 public class connection_DB {
     private static connection_DB instance = null;
