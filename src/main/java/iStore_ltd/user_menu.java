@@ -216,6 +216,8 @@ public class user_menu {
 
                 try {
 
+                    boolean find = false;
+
                     PreparedStatement statement1 = connection.prepareStatement("SELECT users.role, whitelist.email FROM whitelist JOIN users ON whitelist.id = users.email_id WHERE users.pseudo = ?;");
                     statement1.setString(1, search);
                     ResultSet result1 = statement1.executeQuery();
@@ -228,7 +230,15 @@ public class user_menu {
                         lb_email_user_result.setText(email);
                         lb_role_user_result.setText(role);
 
+                        find = true;
+
                     }
+                    if(!find){
+
+                        JOptionPane.showMessageDialog(frame, "Erreur : Utilisateur introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                    }
+
                 }
                 catch (SQLException exp) {
                     exp.printStackTrace();

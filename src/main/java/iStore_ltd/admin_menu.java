@@ -135,6 +135,8 @@ public class admin_menu {
 
                 try {
 
+                    boolean find = false;
+
                     String search_email = tf_email_search_admin.getText();
 
                     PreparedStatement statement1 = connection.prepareStatement("SELECT whitelist.email, users.pseudo, users.role, store.name, whitelist.id FROM whitelist JOIN users ON whitelist.id = users.email_id LEFT JOIN user_store ON whitelist.id = user_store.email_id LEFT JOIN store ON user_store.store_id = store.id WHERE whitelist.email = ?;");
@@ -142,6 +144,8 @@ public class admin_menu {
                     ResultSet result1 = statement1.executeQuery();
 
                     while (result1.next()) {
+
+                        find = true;
 
                         String email = result1.getString("email");
                         String pseudo = result1.getString("pseudo");
@@ -165,6 +169,11 @@ public class admin_menu {
                         ptf_pswd.setVisible(true);
                         cb_role.setVisible(true);
                         cb_store_user.setVisible(true);
+                    }
+                    if(!find){
+
+                        JOptionPane.showMessageDialog(frame, "Erreur : Utilisateur introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+
                     }
                 }
                 catch (SQLException exp) {
