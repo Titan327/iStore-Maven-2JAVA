@@ -88,6 +88,8 @@ public class user_menu {
             String password = String.valueOf(pft_pwd.getPassword());
             String password_rep = String.valueOf(pft_pwd_rep.getPassword());
 
+            Boolean all_ok = true;
+
             try {
 
                 //finir les upsates
@@ -104,6 +106,8 @@ public class user_menu {
 
                     JOptionPane.showMessageDialog(frame, "Erreur : Erreur votre e-mail ne peut pas être vide", "Erreur", JOptionPane.ERROR_MESSAGE);
 
+                    all_ok = false;
+
                 }
 
                 if(password.equals("")){
@@ -119,6 +123,8 @@ public class user_menu {
                     else{
 
                         JOptionPane.showMessageDialog(frame, "Erreur : Erreur votre pseudo ne peut pas être vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+                        all_ok = false;
 
                     }
                 }
@@ -141,19 +147,26 @@ public class user_menu {
 
                             JOptionPane.showMessageDialog(frame, "Erreur : Erreur le mot de passe a mal été répeté", "Erreur", JOptionPane.ERROR_MESSAGE);
 
+                            all_ok = false;
+
                         }
                     }
                     else{
 
                         JOptionPane.showMessageDialog(frame, "Erreur : Votre mot de passe doit contenir au moin 10 caractères, dont au moin un caractère special et une majuscule", "Erreur", JOptionPane.ERROR_MESSAGE);
 
+                        all_ok = false;
+
                     }
                 }
 
-                JOptionPane.showMessageDialog(frame, "Changement effectué !", "Changement", JOptionPane.INFORMATION_MESSAGE);
-                frame.dispose();
-                new disp_stock(new_email);
+                if(all_ok){
 
+                    JOptionPane.showMessageDialog(frame, "Changement effectué !", "Changement", JOptionPane.INFORMATION_MESSAGE);
+                    frame.dispose();
+                    new disp_stock(new_email);
+
+                }
             }
             catch (SQLException exp) {
                 exp.printStackTrace();

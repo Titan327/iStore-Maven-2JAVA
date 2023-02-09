@@ -257,7 +257,7 @@ public class disp_stock {
             public void actionPerformed(ActionEvent e) {
 
                 frame.dispose();
-                new admin_menu();
+                new admin_menu(email);
 
             }
         });
